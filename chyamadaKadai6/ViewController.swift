@@ -9,9 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
     private var contentView: ContentView!
-    private var targetNumber: Int?
-    private var currentSlideNumber: Int?
-    var handleNumberModel: HandleNumberModel?
+    var handleNumberModel: HandleNumberModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,15 +20,16 @@ class ViewController: UIViewController {
         initializeSliderValue()
         view.addSubview(contentView)
 
-        handleNumberModel = HandleNumberModel()
-        initializeTargetNumber()
-        currentSlideNumber = Int(contentView.numberSetSlider.value)
+        handleNumberModel = HandleNumberModel(
+            range: Int(contentView.sliderMinValue)...Int(contentView.sliderMaxValue)
+        )
+
+        resetTargetNumber()
     }
 
-    private func initializeTargetNumber() {
-        targetNumber = handleNumberModel?.setTargetNumber(min: Int(contentView.sliderMinValue),
-                                                          max: Int(contentView.sliderMaxValue))
-        contentView.targetNumberLabel.text = String(describing: targetNumber ?? 0)
+    private func resetTargetNumber() {
+        handleNumberModel.resetCorrectAnswer()
+        contentView.targetNumberLabel.text = String(describing: handleNumberModel.correctAnswer)
     }
 
     private func initializeSliderValue() {
@@ -44,7 +43,7 @@ class ViewController: UIViewController {
         let action = UIAlertAction(title: "再挑戦",
                                    style: .default,
                                    handler: { [self] _ in
-                                    initializeTargetNumber()
+                                    resetTargetNumber()
                                     initializeSliderValue()
                                    })
         alert.addAction(action)
@@ -54,21 +53,10 @@ class ViewController: UIViewController {
 
 extension ViewController: JudgeButtonDelegate {
     func judgeSlideNumber() {
-        senderValue(currentSlideValue: contentView.numberSetSlider.value)
-        guard let handleNumberModel = handleNumberModel,
-              let targetNumber = targetNumber,
-              let currentSlideNumber = currentSlideNumber else {
+        guard let handleNumberModel = handleNumberModel else {
             return
         }
-        let alertMessage = handleNumberModel.compareNumbers(targetNumber: targetNumber,
-                                                            currentSlideNumber: currentSlideNumber)
+        let alertMessage = handleNumberModel.judge(currentSlideNumber: Int(contentView.numberSetSlider.value))
         presentResultAlert(alertMessage: alertMessage)
-    }
-}
-
-extension ViewController: SliderValueDelegate {
-    func senderValue(currentSlideValue: Float) {
-        contentView.numberSetSlider.setValue(currentSlideValue, animated: true)
-        currentSlideNumber = Int(currentSlideValue)
     }
 }

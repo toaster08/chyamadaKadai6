@@ -8,12 +8,8 @@
 import Foundation
 import UIKit
 
-protocol JudgeButtonDelegate: class {
+protocol JudgeButtonDelegate: AnyObject {
     func judgeSlideNumber()
-}
-
-protocol SliderValueDelegate: class {
-    func senderValue(currentSlideValue: Float)
 }
 
 final class ContentView: UIView {
@@ -25,7 +21,6 @@ final class ContentView: UIView {
     private(set) var sliderMaxValue: Float = 100
 
     weak var judgeButtonDelegate: JudgeButtonDelegate?
-    weak var sliderValueDelegate: SliderValueDelegate?
 
     override func layoutIfNeeded() {
         setupTargetNumberLabel()
@@ -76,7 +71,6 @@ final class ContentView: UIView {
 
     @objc func didChangeSliderValue(_ sender: UISlider) {
         print(sender.value)
-        sliderValueDelegate?.senderValue(currentSlideValue: sender.value)
     }
 
     private func setupLabel() {
