@@ -8,12 +8,20 @@
 import Foundation
 
 final class HandleNumberModel {
-    func setTargetNumber(min: Int, max: Int) -> Int {
-        Int.random(in: min...max)
+    private(set) var correctAnswer: Int
+    private let range: ClosedRange<Int>
+
+    init(range: ClosedRange<Int>) {
+        self.range = range
+        self.correctAnswer = Int.random(in: range)
     }
 
-    func compareNumbers(targetNumber: Int, currentSlideNumber: Int) -> String {
-        if targetNumber == currentSlideNumber {
+    func resetCorrectAnswer() {
+        self.correctAnswer = Int.random(in: range)
+    }
+
+    func judge(currentSlideNumber: Int) -> String {
+        if correctAnswer == currentSlideNumber {
             return "あたり!\nあなたの値：\(currentSlideNumber)\n"
         } else {
             return "はずれ!\nあなたの値：\(currentSlideNumber)\n"
