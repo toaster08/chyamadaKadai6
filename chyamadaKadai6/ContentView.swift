@@ -1,6 +1,6 @@
 //
 //  View.swift
-//  chayamadaKadai5_MVC
+//  chayamadaKadai6
 //
 //  Created by 山田　天星 on 2021/07/11.
 //
